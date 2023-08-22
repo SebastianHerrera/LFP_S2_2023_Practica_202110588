@@ -21,12 +21,15 @@ def lectura():
                 linea = linea.replace("crear_producto","")
                 linea = linea.replace("\n","")
                 splitted_line = linea.split(";")
-                name = splitted_line[0]
-                quantity = int(splitted_line[1])
-                price = float(splitted_line[2])
-                location = splitted_line[3]
-                newProduct = Producto(name,quantity,price,location)
-                db.append(newProduct)
+                try:
+                    name = splitted_line[0]
+                    quantity = int(splitted_line[1])
+                    price = float(splitted_line[2])
+                    location = splitted_line[3]
+                    newProduct = Producto(name,quantity,price,location)
+                    db.append(newProduct)
+                except:
+                    print(Fore.RED+"EL PRODUCTO NO PUEDE SER CREADO, NO CUMPLE CON LOS REQUERIMIENTOS"+Fore.WHITE)
         archivo.close()
         root.destroy()
 
@@ -50,6 +53,8 @@ def movimientos():
                         if location == (db[i].ubicacion):
                             if quantity>=0:
                                 db[i].cantidad=(db[i].cantidad)+quantity
+                            else:
+                                print(Fore.RED+"LA CANTIDAD INGRESADA ES NEGATIVA"+Fore.WHITE)
                         else:
                              print(Fore.RED+"NO EXISTE EL PRODUCTO"+Fore.YELLOW,name,Fore.RED+"EN LA",location+Fore.WHITE)
 
@@ -63,7 +68,7 @@ def movimientos():
                 for i in range(len(db)):
                     if name == (db[i].nombre):
                         if location == (db[i].ubicacion):
-                            if quantity<=(db[i].cantidad):
+                            if quantity<=(db[i].cantidad) and quantity>=0:
                                 db[i].cantidad=(db[i].cantidad)-quantity
                             else:
                                 print(Fore.RED+"NO EXISTE TANTO STOCK DEL PRODUCTO"+Fore.YELLOW,name,Fore.RED+"EN LA",location,"\nEL STOCK ACTUAL ES DE:",Fore.YELLOW+str(db[i].cantidad)+Fore.WHITE)
@@ -84,8 +89,9 @@ def inventario():
 
 
 def menu():
+    boolean = True
     a = 1
-    while a>=1 and a<=4:
+    while boolean==True:
         print("\n"+Fore.LIGHTCYAN_EX+"-----------------------------------------------------------")
         print(Fore.LIGHTYELLOW_EX+"Practica 1 - Lab Lenguajes Formales y de Programacion")
         print(Fore.LIGHTCYAN_EX+"-----------------------------------------------------------"+"\n")
@@ -95,23 +101,24 @@ def menu():
         print("3. Crear informe de inventario")
         print("4. Salir"+"\n\n")
         print(Fore.GREEN+"Ingrese una opcion:"+"\n")
-        a = int(input())
-
-        if a==1:
-            input("\n"+Fore.WHITE+"PRESIONE ENTER PARA ESCOGER UN ARCHIVO")
-            lectura()
-            input("\n"+Fore.BLACK+"PRESIONE PARA CONTINUAR AL MENU")
-        elif a==2:
-            input("\n"+Fore.WHITE+"PRESIONE ENTER PARA ESCOGER UN ARCHIVO")
-            movimientos()
-            input("\n"+Fore.BLACK+"PRESIONE PARA CONTINUAR AL MENU")
-        elif a==3:
-           inventario()
-           input("\n"+Fore.BLACK+"PRESIONE PARA CONTINUAR AL MENU")
-
-        
-    print("\n"+Fore.RED+"OPCION NO VALIDA"+"\n")
-    sys.exit()
-
+        try:
+            a = int(input())
+            if a==1:
+                input("\n"+Fore.WHITE+"PRESIONE ENTER PARA ESCOGER UN ARCHIVO")
+                lectura()
+                input("\n"+Fore.BLACK+"PRESIONE PARA CONTINUAR AL MENU")
+            elif a==2:
+                input("\n"+Fore.WHITE+"PRESIONE ENTER PARA ESCOGER UN ARCHIVO")
+                movimientos()
+                input("\n"+Fore.BLACK+"PRESIONE PARA CONTINUAR AL MENU")
+            elif a==3:
+                inventario()
+                input("\n"+Fore.BLACK+"PRESIONE PARA CONTINUAR AL MENU")
+            elif a==4:
+                boolean = False
+                print(Fore.YELLOW+"GRACIAS POR USAR NUESTRO SERVICIO"+Fore.WHITE)
+                sys.exit()
+        except:
+            print("\n"+Fore.RED+"OPCION NO VALIDA"+"\n")
 
 menu()
